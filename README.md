@@ -27,7 +27,7 @@
     <img src="https://img.shields.io/badge/Demo-&#x1f917-blue">
   </a>
   <a href="http://demo.pointllm.runsenxu.com" target='_blank'>
-    <img src="https://visitor-badge.laobi.icu/badge?page_id=openrobotlab.pointllm&left_color=gray&right_color=blue">
+    <img src="https://visitor-badge.laobi.icu/badge?page_id=OpenRobotLab.pointllm&left_color=gray&right_color=blue">
   </a>
 </p>
 
