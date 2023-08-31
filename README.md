@@ -23,10 +23,10 @@
   <a href="https://runsenxu.com/projects/PointLLM" target='_blank'>
     <img src="https://img.shields.io/badge/Project-&#x1F680-blue">
   </a>
-  <a href="" target='_blank'>
+  <a href="http://demo.pointllm.runsenxu.com" target='_blank'>
     <img src="https://img.shields.io/badge/Demo-&#x1f917-blue">
   </a>
-  <a href="http://demo.pointllm.runsenxu.com" target='_blank'>
+  <a href="" target='_blank'>
     <img src="https://visitor-badge.laobi.icu/badge?page_id=OpenRobotLab.pointllm&left_color=gray&right_color=blue">
   </a>
 </p>
@@ -42,7 +42,7 @@ We introduce <b>PointLLM, a multi-modal large language model capable of understa
 - [2023-08] We release the [paper]() of PointLLM and an online gradio [demo](http://demo.pointllm.runsenxu.com). Try it! &#x1F389;
 
 ## 🤖 Online Demo
-PointLLM is online! Try it at [http://demo.pointllm.runsenxu.com](http://demo.pointllm.runsenxu.com).
+PointLLM is online! Try it at [http://demo.pointllm.runsenxu.com](http://demo.pointllm.runsenxu.com) or at [http://101.230.144.196](http://101.230.144.196).
 
 You can chat with PointLLM about the models of the [Objaverse](https://objaverse.allenai.org) dataset or about your own point clouds!
 
