@@ -23,7 +23,7 @@
   <a href="https://runsenxu.com/projects/PointLLM" target='_blank'>
     <img src="https://img.shields.io/badge/Project-&#x1F680-blue">
   </a>
-  <a href="http://demo.pointllm.runsenxu.com" target='_blank'>
+  <a href="http://101.230.144.196" target='_blank'>
     <img src="https://img.shields.io/badge/Demo-&#x1f917-blue">
   </a>
   <a href="" target='_blank'>
@@ -39,10 +39,10 @@
 We introduce <b>PointLLM, a multi-modal large language model capable of understanding colored point clouds of objects.</b> It perceives object types, geometric structures, and appearance without concerns for ambiguous depth, occlusion, or viewpoint dependency. <b>We collect a novel dataset comprising 660K simple and 70K complex point-text instruction pairs</b> to enable a two-stage training strategy. To rigorously evaluate our model's perceptual abilities and its generalization capabilities, <b>we establish two benchmarks: Generative 3D Object Classification and 3D Object Captioning, assessed through three different evaluation methods.</b>
 
 ## 🔥 News
-- [2023-08] We release the [paper]() of PointLLM and an online gradio [demo](http://demo.pointllm.runsenxu.com). Try it! &#x1F389;
+- [2023-08] We release the [paper]() of PointLLM and an online gradio [demo](http://101.230.144.196). Try it! &#x1F389;
 
 ## 🤖 Online Demo
-PointLLM is online! Try it at [http://demo.pointllm.runsenxu.com](http://demo.pointllm.runsenxu.com) or at [http://101.230.144.196](http://101.230.144.196).
+PointLLM is online! Try it at [http://101.230.144.196](http://101.230.144.196).
 
 You can chat with PointLLM about the models of the [Objaverse](https://objaverse.allenai.org) dataset or about your own point clouds!
 
