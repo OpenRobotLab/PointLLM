@@ -14,10 +14,10 @@
 </p>
 
 <p align="center">
-  <a href="" target='_blank'>
-    <img src="https://img.shields.io/badge/arXiv-📖-blue?">
+  <a href="http://arxiv.org/abs/2308.16911" target='_blank'>
+    <img src="https://img.shields.io/badge/arXiv-2308.16911-blue?">
   </a> 
-  <a href="" target='_blank'>
+  <a href="https://arxiv.org/pdf/2308.16911.pdf" target='_blank'>
     <img src="https://img.shields.io/badge/Paper-📖-blue?">
   </a> 
   <a href="https://runsenxu.com/projects/PointLLM" target='_blank'>
@@ -42,7 +42,7 @@ We introduce <b>PointLLM, a multi-modal large language model capable of understa
 - [2023-08] We release the [paper]() of PointLLM and an online gradio [demo](http://101.230.144.196). Try it! &#x1F389;
 
 ## 🤖 Online Demo
-PointLLM is online! Try it at [http://101.230.144.196](http://101.230.144.196).
+<b>PointLLM is online! Try it at [http://101.230.144.196](http://101.230.144.196).</b>
 
 You can chat with PointLLM about the models of the [Objaverse](https://objaverse.allenai.org) dataset or about your own point clouds!
 
@@ -83,7 +83,7 @@ If you find our work helpful, please cite:
 @article{xu2023pointllm,
   title={PointLLM: Empowering Large Language Models to Understand Point Clouds},
   author={Xu, Runsen and Wang, Xiaolong and Wang, Tai and Chen, Yilun and Pang, Jiangmiao and Lin, Dahua},
-  journal={arXiv preprint},
+  journal={arXiv preprint arXiv:2308.16911},
   year={2023}
 }
 ```
