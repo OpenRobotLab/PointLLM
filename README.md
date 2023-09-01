@@ -46,6 +46,8 @@ We introduce <b>PointLLM, a multi-modal large language model capable of understa
 
 You can chat with PointLLM about the models of the [Objaverse](https://objaverse.allenai.org) dataset or about your own point clouds!
 
+Please do not hesitate to tell us if you have any feedback! 😃
+
 ## 💬 Dialogue Examples
 | Dialogue 1 | Dialogue 2| Dialogue 3 | Dialogue 3
 | :-: | :-: | :-: | :-: |
