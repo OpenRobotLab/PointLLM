@@ -39,7 +39,7 @@
 We introduce <b>PointLLM, a multi-modal large language model capable of understanding colored point clouds of objects.</b> It perceives object types, geometric structures, and appearance without concerns for ambiguous depth, occlusion, or viewpoint dependency. <b>We collect a novel dataset comprising 660K simple and 70K complex point-text instruction pairs</b> to enable a two-stage training strategy. To rigorously evaluate our model's perceptual abilities and its generalization capabilities, <b>we establish two benchmarks: Generative 3D Object Classification and 3D Object Captioning, assessed through three different evaluation methods.</b>
 
 ## 🔥 News
-- [2023-08] We release the [paper]() of PointLLM and an online gradio [demo](http://101.230.144.196). Try it! &#x1F389;
+- [2023-08] We release the [paper](http://arxiv.org/abs/2308.16911) of PointLLM and an online gradio [demo](http://101.230.144.196). Try it! &#x1F389;
 
 ## 🤖 Online Demo
 <b>PointLLM is online! Try it at [http://101.230.144.196](http://101.230.144.196).</b>
