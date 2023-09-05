@@ -31,6 +31,10 @@
   </a>
 </p>
 
+<div style="text-align: center;">
+    <video src="assets/Demo_1080K.mov" width=100% controls preload></video>
+</div>
+
 ## 🏠 About
 <!-- ![Teaser](assets/teaser.jpg) -->
 <div style="text-align: center;">
