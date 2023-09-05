@@ -97,7 +97,7 @@ This work is under the <a rel="license" href="http://creativecommons.org/license
 
 ## 📚 Related Work
 Together, Let's make LLM for 3D great!
-- [Point-Bind & Point-LLM](https://arxiv.org/abs/2309.00615): aligns point clouds with 2D image, language, audio, and video, and reason 3D multi-modality input without 3D-instruction data training.
+- [Point-Bind & Point-LLM](https://arxiv.org/abs/2309.00615): aligns point clouds with Image-Bind, and leverages ImageBind-LLM to reason multi-modality input without 3D-instruction data training.
 - [3D-LLM](https://arxiv.org/abs/2307.12981): employs 2D foundation models to encode multi-view images of 3D point clouds.
 
 
