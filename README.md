@@ -29,6 +29,9 @@
   <a href="" target='_blank'>
     <img src="https://visitor-badge.laobi.icu/badge?page_id=OpenRobotLab.pointllm&left_color=gray&right_color=blue">
   </a>
+  <a href="https://openxlab.org.cn/apps/detail/openxlab-app/PointLLM" target='_blank'>
+    <img src="https://cdn-static.openxlab.org.cn/app-center/openxlab_app.svg">
+  </a>
 </p>
 
 ## 🏠 About
