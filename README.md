@@ -45,7 +45,7 @@ We introduce <b>PointLLM, a multi-modal large language model capable of understa
 - [2023-08] We release the [paper](http://arxiv.org/abs/2308.16911) of PointLLM and an online gradio [demo](http://101.230.144.196). Try it! &#x1F389;
 
 ## 🤖 Online Demo
-<b>PointLLM is online! Try it at [http://101.230.144.196](http://101.230.144.196).</b>
+<b>PointLLM is online! Try it at [http://101.230.144.196](http://101.230.144.196) or at [OpenXLab/PointLLM](https://openxlab.org.cn/apps/detail/openxlab-app/PointLLM).</b>
 
 You can chat with PointLLM about the models of the [Objaverse](https://objaverse.allenai.org) dataset or about your own point clouds!
 
