@@ -1,0 +1,13 @@
+model : {
+  NAME: PointTransformer,
+  trans_dim: 1152, # * point feature dims (hidden state)
+  depth: 12, 
+  drop_path_rate: 0.1, 
+  cls_dim: 40, 
+  num_heads: 12,
+  group_size: 48, 
+  num_group: 512,
+  encoder_dims: 512, # * point group tokens feature
+  point_input_dims: 3,
+}
+npoints: 8192

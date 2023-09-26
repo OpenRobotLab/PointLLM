@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pointllm"
+version = "0.1.0"
+description = "Empower large language models to understand point clouds."
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: Apache Software License",
+]
+dependencies = [
+    "accelerate", "einops", "fastapi", "gradio==3.41.2", "markdown2[all]", "numpy",
+    "requests", "sentencepiece", "tokenizers==0.12.1",
+    "torch>=2.0", "torchvision", "uvicorn", "wandb",
+    "shortuuid",
+    "deepspeed", "peft",
+    "transformers @ git+https://github.com/huggingface/transformers.git@cae78c46",
+    "openai", "tqdm",
+    "easydict", "timm==0.4.12", "ftfy==6.0.1", "regex", "open3d==0.16.0", "h5py", "termcolor",
+    "plyfile", "nltk", "rouge", "scikit-learn", "py-rouge", "pycocoevalcap"
+]
+
+[tool.setuptools.packages.find]
+exclude = ["assets*", "benchmark*", "docs", "dist*", "playground*", "scripts*", "tests*"]
+
+[tool.wheel]
+exclude = ["assets*", "benchmark*", "docs", "dist*", "playground*", "scripts*", "tests*"]

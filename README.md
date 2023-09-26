@@ -14,7 +14,7 @@
 </p>
 
 <p align="center">
-  <a href="http://arxiv.org/abs/2308.16911" target='_blank'>
+  <a href="http://arxiv.org/abs/2308.16911" target='_**blank**'>
     <img src="https://img.shields.io/badge/arXiv-2308.16911-blue?">
   </a> 
   <a href="https://arxiv.org/pdf/2308.16911.pdf" target='_blank'>
@@ -42,7 +42,20 @@
 We introduce <b>PointLLM, a multi-modal large language model capable of understanding colored point clouds of objects.</b> It perceives object types, geometric structures, and appearance without concerns for ambiguous depth, occlusion, or viewpoint dependency. <b>We collect a novel dataset comprising 660K simple and 70K complex point-text instruction pairs</b> to enable a two-stage training strategy. To rigorously evaluate our model's perceptual abilities and its generalization capabilities, <b>we establish two benchmarks: Generative 3D Object Classification and 3D Object Captioning, assessed through three different evaluation methods.</b>
 
 ## 🔥 News
-- [2023-08] We release the [paper](http://arxiv.org/abs/2308.16911) of PointLLM and an online gradio [demo](http://101.230.144.196). Try it! &#x1F389;
+- [2023-09-26] We release the inferencing codes with checkpoints as well as the Objaverse colored point cloud files we use. You can chat with PointLLM with your own machines.
+- [2023-08-31] We release the [paper](http://arxiv.org/abs/2308.16911) of PointLLM and an online gradio [demo](http://101.230.144.196). Try it! &#x1F389;
+
+<!-- contents with emoji -->
+## 📋 Contents
+- [🤖 Online Demo](#-online-demo)
+- [💬 Dialogue Examples](#-dialogue-examples)
+- [🔍 Overview](#-overview)
+- [📦 Inferencing](#-inferencing)
+- [📝 TODO List](#-todo-list)
+- [🔗 Citation](#-citation)
+- [📄 License](#-license)
+- [📚 Related Work](#-related-work)
+- [👏 Acknowledgements](#-acknowledgements)
 
 ## 🤖 Online Demo
 <b>PointLLM is online! Try it at [http://101.230.144.196](http://101.230.144.196) or at [OpenXLab/PointLLM](https://openxlab.org.cn/apps/detail/openxlab-app/PointLLM).</b>
@@ -72,10 +85,63 @@ The point encoder extracts features from the input point cloud and projects them
   <img src="assets/qualitative_comparisons.jpg" align="center" width="100%">
 </p>
 
+## 📦 Inferencing
+### Installation
+We test our codes under the following environment:
+- Ubuntu 20.04
+- NVIDIA Driver: 515.65.01
+- CUDA 11.7
+- Python 3.10.13
+- PyTorch 2.0.1
+- Transformers 4.28.0.dev(transformers.git@cae78c46)
+
+To start: 
+1. Clone this repository.
+```bash
+git clone git@github.com:OpenRobotLab/PointLLM.git
+cd PointLLM
+```
+2. Install packages
+```bash
+conda create -n pointllm python=3.10 -y
+conda activate pointllm
+pip install --upgrade pip  # enable PEP 660 support
+pip install -e .
+```
+
+### Data Preparation
+1. Download the two compressed files of 660K Objaverse colored point clouds [here](https://huggingface.co/datasets/RunsenXu/PointLLM/tree/main). They require about 77GB of storage space.
+2. Run the following command to merge the two files into one and uncompress it. This will produce a folder named `8192_npy` containing 660K point cloud files named `{Objaverse_ID}_8192.npy`. Each file is a numpy array with dimensions (8192, 6).
+```bash
+cat Objaverse_660K_8192_npy_split_a* > Objaverse_660K_8192_npy.tar.gz
+tar -xvf Objaverse_660K_8192_npy.tar.gz
+```
+3. In `PointLLM` folder, create a soft link to the uncompressed file in the directory.
+```bash
+cd PointLLM
+ln -s /path/to/8192_npy objaverse_data
+```
+
+### Chatting
+1. The model checkpoints are available at [PointLLM_7B_v1.1](https://huggingface.co/RunsenXu/PointLLM_7B_v1.1/tree/main) and [PointLLM_13B_v1.1](https://huggingface.co/RunsenXu/PointLLM_13B_v1.1/tree/main).
+2. Run the following command to launch a chatbot using the `torch.float32` data type for chatting about 3D models of Objaverse. The model checkpoints will be downloaded automatically. You can also manually download the model checkpoints and specify their paths.
+```bash
+cd PointLLM
+python pointllm/eval/PointLLM_chat.py --model-path RunsenXu/PointLLM_7B_v1.1 --data-path objaverse_data --torch-dtype float32
+```
+3. You can also easily modify the codes for using point clouds other than those from Objaverse, as long as the point clouds input to the model have dimensions (N, 6), where the first three dimensions are `xyz` and the last three dimensions are `rgb`. You may sample the point clouds to have 8192 points, as our model is trained on such point clouds.
+4. The following table shows GPU requirements for different models and data types. We recommend using `torch.bfloat16` if applicable, which is used in the experiments in our paper.
+
+|  Model   | Data Type | GPU Memory |
+|:--------:|:---------:|:----------:|
+| PointLLM-7B  | torch.float16 |    14GB    |
+| PointLLM-7B  | torch.float32 |    28GB    |
+| PointLLM-13B | torch.float16 |    26GB    |
+| PointLLM-13B | torch.float32 |    52GB    |
+
 
 ## 📝 TODO List
-- [ ] Add data preparation codes.
-- [ ] Add inferencing and serving codes with checkpoints.
+- [x] Add inferencing codes with checkpoints.
 - [ ] Add training codes.
 - [ ] Add evaluation codes.
 - [ ] Add data generation codes.
