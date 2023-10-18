@@ -42,6 +42,7 @@
 We introduce <b>PointLLM, a multi-modal large language model capable of understanding colored point clouds of objects.</b> It perceives object types, geometric structures, and appearance without concerns for ambiguous depth, occlusion, or viewpoint dependency. <b>We collect a novel dataset comprising 660K simple and 70K complex point-text instruction pairs</b> to enable a two-stage training strategy. To rigorously evaluate our model's perceptual abilities and its generalization capabilities, <b>we establish two benchmarks: Generative 3D Object Classification and 3D Object Captioning, assessed through three different evaluation methods.</b>
 
 ## 🔥 News
+- [2023-10-18] We release our instruction-following data, including both the simple-description and complex instructions. Download [here](https://huggingface.co/datasets/RunsenXu/PointLLM).
 - [2023-09-26] We release the inferencing codes with checkpoints as well as the Objaverse colored point cloud files we use. You can chat with PointLLM with your own machines.
 - [2023-08-31] We release the [paper](http://arxiv.org/abs/2308.16911) of PointLLM and an online gradio [demo](http://101.230.144.196). Try it! &#x1F389;
 
@@ -50,6 +51,7 @@ We introduce <b>PointLLM, a multi-modal large language model capable of understa
 - [🤖 Online Demo](#-online-demo)
 - [💬 Dialogue Examples](#-dialogue-examples)
 - [🔍 Overview](#-overview)
+- [📁 Instruction-Following Data](#-instruction-following-data)
 - [📦 Inferencing](#-inferencing)
 - [📝 TODO List](#-todo-list)
 - [🔗 Citation](#-citation)
@@ -84,6 +86,12 @@ The point encoder extracts features from the input point cloud and projects them
 <p align="center">
   <img src="assets/qualitative_comparisons.jpg" align="center" width="100%">
 </p>
+
+## 📁 Instruction-Following Data
+Our instruction-following data, including both the simple-description and complex instructions, can be downloaded [here](https://huggingface.co/datasets/RunsenXu/PointLLM).
+- The simple-description data has 660K samples and the complex instructions have 70K samples.
+- Both training data are based on the Objaverse dataset.
+- The complex instructions are generated with GPT-4.
 
 ## 📦 Inferencing
 ### Installation
@@ -142,6 +150,7 @@ python pointllm/eval/PointLLM_chat.py --model-path RunsenXu/PointLLM_7B_v1.1 --d
 
 ## 📝 TODO List
 - [x] Add inferencing codes with checkpoints.
+- [x] Release instruction-following data.
 - [ ] Add training codes.
 - [ ] Add evaluation codes.
 - [ ] Add data generation codes.
