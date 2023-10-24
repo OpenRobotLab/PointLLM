@@ -88,7 +88,7 @@ The point encoder extracts features from the input point cloud and projects them
 </p>
 
 ## 📁 Instruction-Following Data
-Our instruction-following data, including both the simple-description and complex instructions, can be downloaded [here](https://huggingface.co/datasets/RunsenXu/PointLLM).
+Our instruction-following data, including both the simple-description and complex instructions, can be downloaded [here](https://huggingface.co/datasets/RunsenXu/PointLLM). If you have difficulty downloading the data (e.g. network issue), please email the authors.
 - The simple-description data has 660K samples and the complex instructions have 70K samples.
 - Both training data are based on the Objaverse dataset.
 - The complex instructions are generated with GPT-4.
