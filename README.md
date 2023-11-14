@@ -119,7 +119,7 @@ pip install -e .
 
 ### Data Preparation
 1. Download the two compressed files of 660K Objaverse colored point clouds [here](https://huggingface.co/datasets/RunsenXu/PointLLM/tree/main). They require about 77GB of storage space.
-2. Run the following command to merge the two files into one and uncompress it. This will produce a folder named `8192_npy` containing 660K point cloud files named `{Objaverse_ID}_8192.npy`. Each file is a numpy array with dimensions (8192, 6).
+2. Run the following command to merge the two files into one and uncompress it. This will produce a folder named `8192_npy` containing 660K point cloud files named `{Objaverse_ID}_8192.npy`. Each file is a numpy array with dimensions (8192, 6), where the first three dimensions are `xyz` and the last three dimensions are `rgb` in [0, 1] range.
 ```bash
 cat Objaverse_660K_8192_npy_split_a* > Objaverse_660K_8192_npy.tar.gz
 tar -xvf Objaverse_660K_8192_npy.tar.gz
@@ -137,7 +137,7 @@ ln -s /path/to/8192_npy objaverse_data
 cd PointLLM
 python pointllm/eval/PointLLM_chat.py --model-path RunsenXu/PointLLM_7B_v1.1 --data-path objaverse_data --torch-dtype float32
 ```
-3. You can also easily modify the codes for using point clouds other than those from Objaverse, as long as the point clouds input to the model have dimensions (N, 6), where the first three dimensions are `xyz` and the last three dimensions are `rgb`. You may sample the point clouds to have 8192 points, as our model is trained on such point clouds.
+3. You can also easily modify the codes for using point clouds other than those from Objaverse, as long as the point clouds input to the model have dimensions (N, 6), where the first three dimensions are `xyz` and the last three dimensions are `rgb` (in [0, 1] range). You may sample the point clouds to have 8192 points, as our model is trained on such point clouds.
 4. The following table shows GPU requirements for different models and data types. We recommend using `torch.bfloat16` if applicable, which is used in the experiments in our paper.
 
 |  Model   | Data Type | GPU Memory |
