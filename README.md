@@ -42,7 +42,7 @@
 We introduce <b>PointLLM, a multi-modal large language model capable of understanding colored point clouds of objects.</b> It perceives object types, geometric structures, and appearance without concerns for ambiguous depth, occlusion, or viewpoint dependency. <b>We collect a novel dataset comprising 660K simple and 70K complex point-text instruction pairs</b> to enable a two-stage training strategy. To rigorously evaluate our model's perceptual abilities and its generalization capabilities, <b>we establish two benchmarks: Generative 3D Object Classification and 3D Object Captioning, assessed through three different evaluation methods.</b>
 
 ## 🔥 News
-- [2023-12-01] We have released an updated version of our paper (v2), which includes additional baseline comparisons, enhanced human-evaluation metrics, improved model performance, and other refinements. Please check the updated version [here](https://arxiv.org/abs/2308.16911).
+- [2023-12-01] We have released an updated version of our paper (v2), which includes additional baseline comparisons, enhanced human-evaluation metrics, improved model performance (PointLLM-v1.2), and other refinements. Please check the updated version [here](https://arxiv.org/abs/2308.16911).
 - [2023-10-18] We release our instruction-following data, including both the simple-description and complex instructions. Download [here](https://huggingface.co/datasets/RunsenXu/PointLLM).
 - [2023-09-26] We release the inferencing codes with checkpoints as well as the Objaverse colored point cloud files we use. You can chat with PointLLM with your own machines.
 - [2023-08-31] We release the [paper](http://arxiv.org/abs/2308.16911) of PointLLM and an online gradio [demo](http://101.230.144.196). Try it! &#x1F389;
@@ -52,8 +52,7 @@ We introduce <b>PointLLM, a multi-modal large language model capable of understa
 - [🤖 Online Demo](#-online-demo)
 - [💬 Dialogue Examples](#-dialogue-examples)
 - [🔍 Overview](#-overview)
-- [📁 Instruction-Following Data](#-instruction-following-data)
-- [📦 Inferencing](#-inferencing)
+- [📦 Training and Inferencing](#-training-and-inferencing)
 - [📝 TODO List](#-todo-list)
 - [🔗 Citation](#-citation)
 - [📄 License](#-license)
@@ -83,18 +82,13 @@ The point encoder extracts features from the input point cloud and projects them
 
 ### Experiment Results
 
-#### Qualitative Comparisons with 2D Models
+#### Qualitative Comparisons with baselines.
+Please refer to our paper for more results.
 <p align="center">
-  <img src="assets/qualitative_comparisons.jpg" align="center" width="100%">
+  <img src="assets/qualitative_comparisons_v2.png" align="center" width="100%">
 </p>
 
-## 📁 Instruction-Following Data
-Our instruction-following data, including both the simple-description and complex instructions, can be downloaded [here](https://huggingface.co/datasets/RunsenXu/PointLLM). If you have difficulty downloading the data (e.g. network issue), please email the authors.
-- The simple-description data has 660K samples and the complex instructions have 70K samples.
-- Both training data are based on the Objaverse dataset.
-- The complex instructions are generated with GPT-4.
-
-## 📦 Inferencing
+## 📦 Training and Inferencing
 ### Installation
 We test our codes under the following environment:
 - Ubuntu 20.04
@@ -116,9 +110,14 @@ conda create -n pointllm python=3.10 -y
 conda activate pointllm
 pip install --upgrade pip  # enable PEP 660 support
 pip install -e .
+
+# * for training
+pip install ninja
+pip install flash-attn
 ```
 
 ### Data Preparation
+#### Objaverse Data
 1. Download the two compressed files of 660K Objaverse colored point clouds [here](https://huggingface.co/datasets/RunsenXu/PointLLM/tree/main). They require about 77GB of storage space.
 2. Run the following command to merge the two files into one and uncompress it. This will produce a folder named `8192_npy` containing 660K point cloud files named `{Objaverse_ID}_8192.npy`. Each file is a numpy array with dimensions (8192, 6), where the first three dimensions are `xyz` and the last three dimensions are `rgb` in [0, 1] range.
 ```bash
@@ -131,12 +130,63 @@ cd PointLLM
 ln -s /path/to/8192_npy objaverse_data
 ```
 
+#### Instruction-Following Data
+1. In `PointLLM` folder, create a directory named `anno_data`.
+2. Our instruction-following data, including both the simple-description and complex instructions, can be downloaded [here](https://huggingface.co/datasets/RunsenXu/PointLLM). If you have difficulty downloading the data (e.g. network issue), please email the authors.
+- The simple-description data has 660K samples and the complex instructions have 70K samples.
+- Both training data are based on the Objaverse dataset.
+- The complex instructions are generated with GPT-4.
+3. Put the data files in the `anno_data` directory. The directory should look like this:
+```bash
+PointLLM/anno_data
+├── PointLLM_brief_description_660K_filtered.json
+├── PointLLM_brief_description_660K.json
+└── PointLLM_complex_instruction_70K.json
+```
+4. Note, the `PointLLM_brief_description_660K_filtered.json` is filterd from `PointLLM_brief_description_660K.json` by removing the 3000 objects we reserved as the validataion set. If you want to reproduce the results in our paper, you should use the `PointLLM_brief_description_660K_filtered.json` for training. The `PointLLM_complex_instruction_70K.json` contains objects all from the training set.
+
+### Training
+#### Download the Initial LLM and Point Encoder Weights
+1. In `PointLLM` folder, create a directory named `checkpoints`.
+2. Download the pre-trained LLM and point encoder: [
+PointLLM_7B_v1.1_init](https://huggingface.co/RunsenXu/PointLLM_7B_v1.1_init/tree/main) or [PointLLM_13B_v1.1_init](https://huggingface.co/RunsenXu/PointLLM_13B_v1.1_init/tree/main). Put them in the `checkpoints` directory.
+3. Note, the above "v1.1" means we use the Vicuna-v1.1 checkpoints, and you do **not** need to download the original LLaMA weights again. 
+
+#### Start Training
+1. For stage-1 training, simply run:
+```bash
+cd PointLLM
+scripts/train_stage1.sh
+```
+2. After stage-1 training, start stage-2 training:
+```bash
+scripts/train_stage2.sh
+```
+
+#### PointLLM-v1.1 and PointLLM-v1.2
+Usually, you do not have to care about the following contents. They are only for reproducing the results in our v1 paper (PointLLM-v1.1). If you want to compare with our models or use our models for downstream tasks, please use PointLLM-v1.2 (refer to our v2 paper), which have better performance.
+1. PointLLM v1.1 and v1.2 use slightly different pre-trained point encoders and projectors. If you want to reproduce PointLLM v1.1, edit the `config.json` file in the directory of initial LLM and point encoder weights, for example, `vim checkpoints/PointLLM_7B_v1.1_init/config.json`.
+2. Change the key `"point_backbone_config_name"` to specify another point encoder config:
+```bash
+# change from
+"point_backbone_config_name": "PointTransformer_8192point_2layer" # v1.2
+# to
+"point_backbone_config_name": "PointTransformer_base_8192point", # v1.1
+```
+3. Edit the checkpoint path of point encoder in `scripts/train_stage1.sh`:
+```bash
+# change from
+point_backbone_ckpt=$model_name_or_path/point_bert_v1.2.pt # v1.2
+# to
+point_backbone_ckpt=$model_name_or_path/point_bert_v1.1.pt # v1.1
+```
+
 ### Chatting
-1. The model checkpoints are available at [PointLLM_7B_v1.1](https://huggingface.co/RunsenXu/PointLLM_7B_v1.1/tree/main) and [PointLLM_13B_v1.1](https://huggingface.co/RunsenXu/PointLLM_13B_v1.1/tree/main).
+1. The trained model checkpoints are available [here](https://huggingface.co/RunsenXu) (including different versions of PointLLM). 
 2. Run the following command to launch a chatbot using the `torch.float32` data type for chatting about 3D models of Objaverse. The model checkpoints will be downloaded automatically. You can also manually download the model checkpoints and specify their paths.
 ```bash
 cd PointLLM
-python pointllm/eval/PointLLM_chat.py --model-path RunsenXu/PointLLM_7B_v1.1 --data-path objaverse_data --torch-dtype float32
+PYTHONPATH=$PWD python pointllm/eval/PointLLM_chat.py --model-path RunsenXu/PointLLM_7B_v1.2 --data-path objaverse_data --torch-dtype float32
 ```
 3. You can also easily modify the codes for using point clouds other than those from Objaverse, as long as the point clouds input to the model have dimensions (N, 6), where the first three dimensions are `xyz` and the last three dimensions are `rgb` (in [0, 1] range). You may sample the point clouds to have 8192 points, as our model is trained on such point clouds.
 4. The following table shows GPU requirements for different models and data types. We recommend using `torch.bfloat16` if applicable, which is used in the experiments in our paper.
@@ -152,7 +202,7 @@ python pointllm/eval/PointLLM_chat.py --model-path RunsenXu/PointLLM_7B_v1.1 --d
 ## 📝 TODO List
 - [x] Add inferencing codes with checkpoints.
 - [x] Release instruction-following data.
-- [ ] Add training codes.
+- [x] Add training codes.
 - [ ] Add evaluation codes.
 - [ ] Add data generation codes.
 

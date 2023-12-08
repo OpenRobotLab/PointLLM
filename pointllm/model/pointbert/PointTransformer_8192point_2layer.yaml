@@ -1,0 +1,16 @@
+model : {
+  NAME: PointTransformer,
+  trans_dim: 384, 
+  depth: 12, 
+  drop_path_rate: 0.1, 
+  cls_dim: 40, 
+  num_heads: 6,
+  group_size: 32, 
+  num_group: 512,
+  encoder_dims: 256,
+  point_dims: 3,
+  projection_hidden_layer: 2,
+  projection_hidden_dim: [1024, 2048],
+  use_max_pool: false
+}
+npoints: 8192

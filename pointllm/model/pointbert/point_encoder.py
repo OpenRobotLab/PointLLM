@@ -1,6 +1,5 @@
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 from timm.models.layers import DropPath
 from .dvae import Group
 from .dvae import Encoder
@@ -186,5 +185,5 @@ class PointTransformer(nn.Module):
         x = self.norm(x) # * B, G + 1(cls token)(513), C(384)
         if not self.use_max_pool:
             return x
-        concat_f = torch.cat([x[:, 0], x[:, 1:].max(1)[0]], dim=-1) # * concat the cls token and max pool the features of different tokens
-        return concat_f # * B, C(384 + 384)
+        concat_f = torch.cat([x[:, 0], x[:, 1:].max(1)[0]], dim=-1).unsqueeze(1) # * concat the cls token and max pool the features of different tokens, make it B, 1, C
+        return concat_f # * B, 1, C(384 + 384)

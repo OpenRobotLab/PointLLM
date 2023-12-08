@@ -4,7 +4,6 @@ from typing import List, Optional, Tuple, Union
 
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 from torch.nn import CrossEntropyLoss
 from .utils import *
 from pointllm.utils import *
@@ -36,48 +35,58 @@ class PointLLMLlamaModel(LlamaModel):
         if self.point_backbone_type == "PointBERT":
             from pointllm.model import PointTransformer
             # address of config file, in the same dir of this file
-            point_bert_config_addr = os.path.join(os.path.dirname(__file__), "pointbert", "PointTransformer_base_8192point.yaml")
+            point_bert_config_name = getattr(config, "point_backbone_config_name", "PointTransformer_base_8192point") # * default for v1.1, v1.2 uses PointTransformer_8192point_2layer.yaml
+            point_bert_config_addr = os.path.join(os.path.dirname(__file__), "pointbert", f"{point_bert_config_name}.yaml")
             print(f"Loading PointBERT config from {point_bert_config_addr}.")
             point_bert_config = cfg_from_yaml_file(point_bert_config_addr)
             if getattr(config, "use_color", False):
                 point_bert_config.model.point_dims = 6
-            self.point_backbone = PointTransformer(point_bert_config.model, use_max_pool=False)
+            use_max_pool = getattr(point_bert_config.model, "use_max_pool", False) # * default is false
+            
+            self.point_backbone = PointTransformer(point_bert_config.model, use_max_pool=use_max_pool)
             logger.info(f"Using {self.point_backbone.point_dims} dim of points.")
 
             self.point_backbone_config = {
                 "point_cloud_dim": point_bert_config.model.point_dims,
-                "backbone_output_dim": point_bert_config.model.trans_dim,
+                "backbone_output_dim": point_bert_config.model.trans_dim if not use_max_pool else point_bert_config.model.trans_dim * 2,
                 "project_output_dim": self.config.hidden_size,
-                "point_token_len": point_bert_config.model.num_group + 1, # * number of output features, with cls token
-                "mm_use_point_start_end": self.config.mm_use_point_start_end
+                "point_token_len": point_bert_config.model.num_group + 1 if not use_max_pool else 1, # * number of output features, with cls token
+                "mm_use_point_start_end": self.config.mm_use_point_start_end,
+                "projection_hidden_layer": point_bert_config.model.get('projection_hidden_layer', 0),
+                "use_max_pool": use_max_pool
             }
+            if point_bert_config.model.get('projection_hidden_layer', 0) > 0:
+                self.point_backbone_config["projection_hidden_dim"] = point_bert_config.model.projection_hidden_dim # a list
+            
+            logger.info(f"Use max pool is {use_max_pool}. Number of point token is {self.point_backbone_config['point_token_len']}.")
 
-        self.point_proj = nn.Linear(self.point_backbone_config['backbone_output_dim'], self.point_backbone_config['project_output_dim']) # * TODO(Runsen): when fine-tuning, this layer should be initialized
+        # * print relevant info with projection layers
+        backbone_output_dim = self.point_backbone_config["backbone_output_dim"]
+        logger.info(f"Point backbone output dim: {backbone_output_dim}.")
+        logger.info(f"Use {self.point_backbone_config['projection_hidden_layer']} projection hiddent layers.")
+        if self.point_backbone_config['projection_hidden_layer'] > 0:
+            # Add projection layer with linear layers and GELU activation
+            projection_layers = []
+            last_dim = backbone_output_dim
+            for i in range(point_bert_config.model.projection_hidden_layer):
+                projection_layers.append(nn.Linear(last_dim, self.point_backbone_config["projection_hidden_dim"][i]))
+                projection_layers.append(nn.GELU())
+                last_dim = self.point_backbone_config["projection_hidden_dim"][i]
+
+            projection_layers.append(nn.Linear(last_dim, self.point_backbone_config["project_output_dim"]))
+            self.point_proj = nn.Sequential(*projection_layers)
+            logger.info(f"Each layer with {point_bert_config.model.projection_hidden_dim} hidden units.")
+        else:
+            # Single layer
+            self.point_proj = nn.Linear(backbone_output_dim, self.point_backbone_config['project_output_dim'])
+        logger.info(f"Point projector output dim: {self.point_backbone_config['project_output_dim']}.")
+
         self.fix_pointnet = False
         self.fix_llm = False
 
     def load_point_backbone_checkpoint(self, checkpoint_path=None):
-        if self.point_backbone_type != "pointnet2":
-            self.point_backbone.load_checkpoint(self.config.point_backbone_ckpt if checkpoint_path is None else checkpoint_path)
-            return
+        self.point_backbone.load_checkpoint(self.config.point_backbone_ckpt if checkpoint_path is None else checkpoint_path)
 
-        # * for pointnet2
-        if checkpoint_path is None:
-            checkpoint_path = self.config.point_backbone_ckpt
-
-        logger.info(f"Loading pre-trained PointNet2 checkpoint from {checkpoint_path}.")
-        pointnet_state_dict = torch.load(
-            checkpoint_path,
-            map_location=torch.device('cpu')
-            )['model']
-        # * remove prefix
-        new_state_dict = {}
-        for key, value in pointnet_state_dict.items():
-            new_key = key.replace("module.backbone_net.", "")
-            new_state_dict[new_key] = value
-        # * load
-        self.point_backbone.load_state_dict(new_state_dict, strict=False) # * only load backbone
-    
     def forward(
         self,
         input_ids: torch.LongTensor = None,
@@ -109,21 +118,10 @@ class PointLLMLlamaModel(LlamaModel):
                     # * variable numbers of points
                     point_features = []
                     for point_cloud in point_clouds: # * iterate over batch
-                        if self.point_backbone_type == "pointnet2":
-                            end_points = self.point_backbone(point_cloud.unsqueeze(0).to(torch.float32)) 
-                            point_feature = end_points["fp2_features"].transpose(1, 2).contiguous()[0] # * (C, N) -> (N, C)
-                            point_feature = point_feature.to(inputs_embeds.dtype)
-                        else:
-                            # * no need to set as float32
-                            point_feature = self.point_backbone(point_cloud.unsqueeze(0))[0]
+                        point_feature = self.point_backbone(point_cloud.unsqueeze(0))[0]
                         point_features.append(point_feature)
                 else:
-                    if self.point_backbone_type == "pointnet2":
-                        end_points = self.point_backbone(point_clouds.to(torch.float32))
-                        point_features = end_points["fp2_features"].transpose(1, 2).contiguous()
-                        point_features = point_features.to(inputs_embeds.dtype) # * B, N, C
-                    else:
-                        point_features = self.point_backbone(point_clouds)
+                    point_features = self.point_backbone(point_clouds)
 
             if type(point_clouds) is list:
                 point_features = [self.point_proj(point_feature) for point_feature in point_features]
@@ -172,8 +170,6 @@ class PointLLMLlamaModel(LlamaModel):
                     cur_point_idx += 1
             inputs_embeds = torch.stack(new_input_embeds, dim=0)
 
-        # if self.fix_llm: # * this will disable gradient_checkpointing
-            # self.eval() # * mainly to deal with some dropout in LLM (but there is no dropout in LLaMA)
         return super(PointLLMLlamaModel, self).forward(
             input_ids=None, attention_mask=attention_mask, past_key_values=past_key_values,
             inputs_embeds=inputs_embeds, use_cache=use_cache,
