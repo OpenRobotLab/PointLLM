@@ -42,6 +42,7 @@
 We introduce <b>PointLLM, a multi-modal large language model capable of understanding colored point clouds of objects.</b> It perceives object types, geometric structures, and appearance without concerns for ambiguous depth, occlusion, or viewpoint dependency. <b>We collect a novel dataset comprising 660K simple and 70K complex point-text instruction pairs</b> to enable a two-stage training strategy. To rigorously evaluate our model's perceptual abilities and its generalization capabilities, <b>we establish two benchmarks: Generative 3D Object Classification and 3D Object Captioning, assessed through three different evaluation methods.</b>
 
 ## 🔥 News
+- [2023-12-08] We release the codes for training. Please enjoy! &#x1F389; The PointLLM-v1.2 checkpoints and initial weights are still uploading to HuggingFace. These may take 2-3 day. Please wait for a while. &#x1F62D;
 - [2023-12-01] We have released an updated version of our paper (v2), which includes additional baseline comparisons, enhanced human-evaluation metrics, improved model performance (PointLLM-v1.2), and other refinements. Please check the updated version [here](https://arxiv.org/abs/2308.16911).
 - [2023-10-18] We release our instruction-following data, including both the simple-description and complex instructions. Download [here](https://huggingface.co/datasets/RunsenXu/PointLLM).
 - [2023-09-26] We release the inferencing codes with checkpoints as well as the Objaverse colored point cloud files we use. You can chat with PointLLM with your own machines.
@@ -81,6 +82,15 @@ Please do not hesitate to tell us if you have any feedback! 😃
 The point encoder extracts features from the input point cloud and projects them to the latent space of the LLM backbone. The LLM backbone processes sequences of point tokens and text tokens, and generates the predicted tokens as the output.
 
 ### Experiment Results
+#### Quantitave Comparisons with baselines.
+Please refer to our paper for more results.
+<p align="center">
+  <img src="assets/cls_results.png" align="center" width="100%">
+</p>
+<p align="center">
+  <img src="assets/caption_results.png" align="center" width="100%">
+</p>
+**!!!Note: Traditional metrics such as BLEU-1, ROUGE-L, and METEOR tend to favor shorter responses and may not effectively capture semantic accuracy. For a detailed discussion on this, please refer to our paper. We suggest the community not solely rely on these metrics for evaluation.**
 
 #### Qualitative Comparisons with baselines.
 Please refer to our paper for more results.
