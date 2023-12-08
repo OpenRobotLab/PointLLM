@@ -90,7 +90,7 @@ Please refer to our paper for more results.
 <p align="center">
   <img src="assets/caption_results.png" align="center" width="100%">
 </p>
-<b>!!!Note: Traditional metrics such as BLEU-1, ROUGE-L, and METEOR tend to favor shorter responses and may not effectively capture semantic accuracy. For a detailed discussion on this, please refer to our paper. We suggest the community not solely rely on these metrics for evaluation.<b>
+<b>!!!Note: Traditional metrics such as BLEU-1, ROUGE-L, and METEOR tend to favor shorter responses and may not effectively capture semantic accuracy. For a detailed discussion on this, please refer to our paper. We suggest the community not solely rely on these metrics for evaluation.</b>
 
 #### Qualitative Comparisons with baselines.
 Please refer to our paper for more results.
