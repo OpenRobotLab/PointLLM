@@ -156,16 +156,15 @@ def pc_norm(pc):
     pc = np.concatenate((xyz, other_feature), axis=1)
     return pc
 
-def load_ulip2_objaverse_point_cloud(data_path, object_id, pointnum=8192, use_color=False):
-    if not use_color:
-        filename = f"{object_id}/{object_id}_{pointnum}.npz"
-        point_cloud = np.load(os.path.join(data_path, filename))['arr_0'] # * pointnum, 3 array
-    else:
-        filename = f"{object_id}_{pointnum}.npy"
-        point_cloud = np.load(os.path.join(data_path, filename))
+def load_objaverse_point_cloud(data_path, object_id, pointnum=8192, use_color=False):
+    filename = f"{object_id}_{pointnum}.npy"
+    point_cloud = np.load(os.path.join(data_path, filename))
 
     # * normalize
     point_cloud = pc_norm(point_cloud)
+
+    if not use_color:
+        point_cloud = point_cloud[:, :3]
 
     return point_cloud
 

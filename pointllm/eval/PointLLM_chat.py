@@ -7,14 +7,14 @@ from pointllm.utils import disable_torch_init
 from pointllm.model import *
 from pointllm.model.utils import KeywordsStoppingCriteria
 
-from pointllm.data import load_ulip2_objaverse_point_cloud
+from pointllm.data import load_objaverse_point_cloud
 
 import os
 
 def load_point_cloud(args):
     object_id = args.object_id
     print(f"[INFO] Loading point clouds using object_id: {object_id}")
-    point_cloud = load_ulip2_objaverse_point_cloud(args.data_path, object_id, pointnum=8192, use_color=True)
+    point_cloud = load_objaverse_point_cloud(args.data_path, object_id, pointnum=8192, use_color=True)
     
     return object_id, torch.from_numpy(point_cloud).unsqueeze_(0).to(torch.float32)
 

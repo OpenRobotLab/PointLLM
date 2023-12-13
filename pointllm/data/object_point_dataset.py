@@ -112,7 +112,6 @@ class ObjectPointCloudDataset(Dataset):
         filter_ids = ['6760e543e1d645d5aaacd3803bcae524', 'b91c0711149d460a8004f9c06d3b7f38'] if self.use_color else []
 
         # Iterate the list, filter those "conversation_type" not in self.conversation_types
-        # And if self.use_color is True, filter the specific ids.
         self.list_data_dict = [
             data for data in self.list_data_dict 
             if data.get('conversation_type', 'simple_description') in self.conversation_types 
@@ -145,6 +144,10 @@ class ObjectPointCloudDataset(Dataset):
     def _load_objaverse_point_cloud(self, object_id):
         filename = f"{object_id}_{self.pointnum}.npy"
         point_cloud = np.load(os.path.join(self.data_path, filename))
+
+        if not self.use_color:
+            point_cloud = point_cloud[:, :3]
+
         return point_cloud
 
     def pc_norm(self, pc):
