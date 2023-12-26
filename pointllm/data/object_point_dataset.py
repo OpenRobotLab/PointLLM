@@ -211,7 +211,7 @@ if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--data_path", default="objaverse_data", type=str,
+    parser.add_argument("--data_path", default="data/objaverse_data", type=str,
                         help="Path to the data directory.")
     parser.add_argument("--anno_path", default=None, type=str, required=True,
                         help="Path to the annotation file.")

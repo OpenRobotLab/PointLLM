@@ -134,21 +134,22 @@ pip install flash-attn
 cat Objaverse_660K_8192_npy_split_a* > Objaverse_660K_8192_npy.tar.gz
 tar -xvf Objaverse_660K_8192_npy.tar.gz
 ```
-3. In `PointLLM` folder, create a soft link to the uncompressed file in the directory.
+3. In `PointLLM` folder, create a folder `data` and create a soft link to the uncompressed file in the directory.
 ```bash
 cd PointLLM
-ln -s /path/to/8192_npy objaverse_data
+mkdir data
+ln -s /path/to/8192_npy data/objaverse_data
 ```
 
 #### Instruction-Following Data
-1. In `PointLLM` folder, create a directory named `anno_data`.
+1. In `PointLLM/data` folder, create a directory named `anno_data`.
 2. Our instruction-following data, including both the simple-description and complex instructions, can be downloaded [here](https://huggingface.co/datasets/RunsenXu/PointLLM). If you have difficulty downloading the data (e.g. network issue), please email the authors.
 - The simple-description data has 660K samples and the complex instructions have 70K samples.
 - Both training data are based on the Objaverse dataset.
 - The complex instructions are generated with GPT-4.
 3. Put the data files in the `anno_data` directory. The directory should look like this:
 ```bash
-PointLLM/anno_data
+PointLLM/data/anno_data
 ├── PointLLM_brief_description_660K_filtered.json
 ├── PointLLM_brief_description_660K.json
 └── PointLLM_complex_instruction_70K.json
@@ -196,7 +197,7 @@ point_backbone_ckpt=$model_name_or_path/point_bert_v1.1.pt # v1.1
 2. Run the following command to launch a chatbot using the `torch.float32` data type for chatting about 3D models of Objaverse. The model checkpoints will be downloaded automatically. You can also manually download the model checkpoints and specify their paths.
 ```bash
 cd PointLLM
-PYTHONPATH=$PWD python pointllm/eval/PointLLM_chat.py --model-path RunsenXu/PointLLM_7B_v1.2 --data-path objaverse_data --torch-dtype float32
+PYTHONPATH=$PWD python pointllm/eval/PointLLM_chat.py --model-path RunsenXu/PointLLM_7B_v1.2 --data-path data/objaverse_data --torch-dtype float32
 ```
 3. You can also easily modify the codes for using point clouds other than those from Objaverse, as long as the point clouds input to the model have dimensions (N, 6), where the first three dimensions are `xyz` and the last three dimensions are `rgb` (in [0, 1] range). You may sample the point clouds to have 8192 points, as our model is trained on such point clouds.
 4. The following table shows GPU requirements for different models and data types. We recommend using `torch.bfloat16` if applicable, which is used in the experiments in our paper.

@@ -5,8 +5,8 @@ filename=$(basename "$0" | cut -f 1 -d '.')
 dir_path=PointLLM
 
 model_name_or_path=outputs/pointllm_stage1/train_stage1 # Path to the output dir of stage 1 training
-data_path=objaverse_data
-anno_path=anno_data/PointLLM_complex_instruction_70K.json
+data_path=data/objaverse_data
+anno_path=data/anno_data/PointLLM_complex_instruction_70K.json
 output_dir=outputs/pointllm_stage2/$filename
 
 cd $dir_path
