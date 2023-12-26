@@ -167,11 +167,11 @@ PointLLM_7B_v1.1_init](https://huggingface.co/RunsenXu/PointLLM_7B_v1.1_init/tre
 1. For stage-1 training, simply run:
 ```bash
 cd PointLLM
-scripts/train_stage1.sh
+scripts/PointLLM_train_stage1.sh
 ```
 2. After stage-1 training, start stage-2 training:
 ```bash
-scripts/train_stage2.sh
+scripts/PointLLM_train_stage2.sh
 ```
 
 #### PointLLM-v1.1 and PointLLM-v1.2

@@ -6,7 +6,7 @@ dir_path=PointLLM
 model_name_or_path=checkpoints/PointLLM_7B_v1.1_init
 data_path=data/objaverse_data
 anno_path=data/anno_data/PointLLM_brief_description_660K_filtered.json # or PointLLM_brief_description_660K.json (including val sets)
-output_dir=outputs/pointllm_stage1/$filename
+output_dir=outputs/PointLLM_train_stage1/$filename
 point_backbone_ckpt=$model_name_or_path/point_bert_v1.2.pt
 
 cd $dir_path
