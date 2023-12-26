@@ -83,7 +83,7 @@ Please do not hesitate to tell us if you have any feedback! 😃
 The point encoder extracts features from the input point cloud and projects them to the latent space of the LLM backbone. The LLM backbone processes sequences of point tokens and text tokens, and generates the predicted tokens as the output.
 
 ### Experiment Results
-#### Quantitave Comparisons with baselines.
+#### Quantitative Comparisons with baselines.
 Please refer to our paper for more results.
 <p align="center">
   <img src="assets/cls_results.png" align="center" width="100%">
@@ -155,10 +155,10 @@ PointLLM/data/anno_data
 ├── PointLLM_brief_description_660K.json
 └── PointLLM_complex_instruction_70K.json
 ```
-4. Note, the `PointLLM_brief_description_660K_filtered.json` is filterd from `PointLLM_brief_description_660K.json` by removing the 3000 objects we reserved as the validataion set. If you want to reproduce the results in our paper, you should use the `PointLLM_brief_description_660K_filtered.json` for training. The `PointLLM_complex_instruction_70K.json` contains objects all from the training set.
+4. Note, the `PointLLM_brief_description_660K_filtered.json` is filtered from `PointLLM_brief_description_660K.json` by removing the 3000 objects we reserved as the validation set. If you want to reproduce the results in our paper, you should use the `PointLLM_brief_description_660K_filtered.json` for training. The `PointLLM_complex_instruction_70K.json` contains objects from the training set.
 
 #### Evaluation Data
-1. Download the referencing GT `PointLLM_brief_description_val_200_GT.json` we use for the benchmarks on Objaverse dataset [here](https://huggingface.co/datasets/RunsenXu/PointLLM/blob/main/PointLLM_brief_description_val_200_GT.json), and put it in `PointLLM/data/anno_data`. We also provide the 3000 object ids we filter during trainnig [here](https://huggingface.co/datasets/RunsenXu/PointLLM/blob/main/val_object_ids_3000.txt).
+1. Download the referencing GT `PointLLM_brief_description_val_200_GT.json` we use for the benchmarks on Objaverse dataset [here](https://huggingface.co/datasets/RunsenXu/PointLLM/blob/main/PointLLM_brief_description_val_200_GT.json), and put it in `PointLLM/data/anno_data`. We also provide the 3000 object ids we filter during training [here](https://huggingface.co/datasets/RunsenXu/PointLLM/blob/main/val_object_ids_3000.txt).
 2. Create a directory named `modelnet40_data` in `PointLLM/data`. Download the test split of ModelNet40 point clouds `modelnet40_test_8192pts_fps.dat` [here](https://huggingface.co/datasets/RunsenXu/PointLLM/blob/main/modelnet40_test_8192pts_fps.dat) and put it in `PointLLM/data/modelnet40_data`.
 
 ### Training
@@ -166,7 +166,7 @@ PointLLM/data/anno_data
 1. In `PointLLM` folder, create a directory named `checkpoints`.
 2. Download the pre-trained LLM and point encoder: [
 PointLLM_7B_v1.1_init](https://huggingface.co/RunsenXu/PointLLM_7B_v1.1_init/tree/main) or [PointLLM_13B_v1.1_init](https://huggingface.co/RunsenXu/PointLLM_13B_v1.1_init/tree/main). Put them in the `checkpoints` directory.
-3. Note, the above "v1.1" means we use the Vicuna-v1.1 checkpoints, and you do **not** need to download the original LLaMA weights again. 
+3. Note that the above "v1.1" means we use the Vicuna-v1.1 checkpoints, and you do **not** need to download the original LLaMA weights again. 
 
 #### Start Training
 1. For stage-1 training, simply run:
@@ -180,24 +180,27 @@ scripts/PointLLM_train_stage2.sh
 ```
 
 #### PointLLM-v1.1 and PointLLM-v1.2
-Usually, you do not have to care about the following contents. They are only for reproducing the results in our v1 paper (PointLLM-v1.1). If you want to compare with our models or use our models for downstream tasks, please use PointLLM-v1.2 (refer to our v2 paper), which have better performance.
+Usually, you do not have to care about the following contents. They are only for reproducing the results in our v1 paper (PointLLM-v1.1). If you want to compare with our models or use our models for downstream tasks, please use PointLLM-v1.2 (refer to our v2 paper), which has better performance.
 <details>
-<summary>The following steps are for reproducing PointLLM-v1.1 (click to expand)</summary>
+  <summary>The following steps are for reproducing PointLLM-v1.1 (click to expand)</summary>
+  
 1. PointLLM v1.1 and v1.2 use slightly different pre-trained point encoders and projectors. If you want to reproduce PointLLM v1.1, edit the `config.json` file in the directory of initial LLM and point encoder weights, for example, `vim checkpoints/PointLLM_7B_v1.1_init/config.json`.
+  
 2. Change the key `"point_backbone_config_name"` to specify another point encoder config:
-```bash
-# change from
-"point_backbone_config_name": "PointTransformer_8192point_2layer" # v1.2
-# to
-"point_backbone_config_name": "PointTransformer_base_8192point", # v1.1
-```
-3. Edit the checkpoint path of point encoder in `scripts/train_stage1.sh`:
-```bash
-# change from
-point_backbone_ckpt=$model_name_or_path/point_bert_v1.2.pt # v1.2
-# to
-point_backbone_ckpt=$model_name_or_path/point_bert_v1.1.pt # v1.1
-```
+    ```bash
+    # change from
+    "point_backbone_config_name": "PointTransformer_8192point_2layer" # v1.2
+    # to
+    "point_backbone_config_name": "PointTransformer_base_8192point", # v1.1
+    ```
+
+3. Edit the checkpoint path of the point encoder in `scripts/train_stage1.sh`:
+    ```bash
+    # change from
+    point_backbone_ckpt=$model_name_or_path/point_bert_v1.2.pt # v1.2
+    # to
+    point_backbone_ckpt=$model_name_or_path/point_bert_v1.1.pt # v1.1
+    ```
 </details>
 
 ### Chatting
@@ -209,31 +212,34 @@ PYTHONPATH=$PWD python pointllm/eval/PointLLM_chat.py --model_name RunsenXu/Poin
 ```
 3. You can also easily modify the codes for using point clouds other than those from Objaverse, as long as the point clouds input to the model have dimensions (N, 6), where the first three dimensions are `xyz` and the last three dimensions are `rgb` (in [0, 1] range). You may sample the point clouds to have 8192 points, as our model is trained on such point clouds.
 4. The following table shows GPU requirements for different models and data types. We recommend using `torch.bfloat16` if applicable, which is used in the experiments in our paper.
-
-|  Model   | Data Type | GPU Memory |
-|:--------:|:---------:|:----------:|
-| PointLLM-7B  | torch.float16 |    14GB    |
-| PointLLM-7B  | torch.float32 |    28GB    |
-| PointLLM-13B | torch.float16 |    26GB    |
-| PointLLM-13B | torch.float32 |    52GB    |
+   
+    |  Model   | Data Type | GPU Memory |
+    |:--------:|:---------:|:----------:|
+    | PointLLM-7B  | torch.float16 |    14GB    |
+    | PointLLM-7B  | torch.float32 |    28GB    |
+    | PointLLM-13B | torch.float16 |    26GB    |
+    | PointLLM-13B | torch.float32 |    52GB    |
 
 ### Evaluation
 #### Inferencing
-1. Run the following commands to inference the results.
+1. Run the following commands to infer the results.
 2. Different commands for inferencing on different benchmarks (PointLLM_7B_v1.2 as an example):
 ```bash
 cd PointLLM
 export PYTHONPATH=$PWD
+
 # Open Vocabulary Classification on Objaverse
 python pointllm/eval/eval_objaverse.py --model_name RunsenXu/PointLLM_7B_v1.2 --task_type classification --prompt_index 0 # or --prompt_index 1
+
 # Object captioning on Objaverse
 python pointllm/eval/eval_objaverse.py --model_name RunsenXu/PointLLM_7B_v1.2 --task_type captioning --prompt_index 2
+
 # Close-set Zero-shot Classification on ModelNet40
 python pointllm/eval/eval_modelnet_cls.py --model_name RunsenXu/PointLLM_7B_v1.2 --prompt_index 0 # or --prompt_index 1
 ```
-3. Please check the default command-line arguements of these two scripts. You can specify different prompts, data paths, and other parameters. 
+3. Please check the default command-line arguments of these two scripts. You can specify different prompts, data paths, and other parameters. 
 4. After inferencing, the results will be saved in `{model_name}/evaluation` as a dict with the following format:
-```json
+```bash
 {
   "prompt": "",
   "results": [
@@ -253,29 +259,32 @@ python pointllm/eval/eval_modelnet_cls.py --model_name RunsenXu/PointLLM_7B_v1.2
 ```bash
 cd PointLLM
 export PYTHONPATH=$PWD
-export OPENAI_API_KEY=sk-**** 
+export OPENAI_API_KEY=sk-****
+
 # Open Vocabulary Classification on Objaverse
 python pointllm/eval/evaluator.py --results_path /path/to/model_output --model_type gpt-4-0613 --eval_type open-free-form-classification --parallel --num_workers 15
+
 # Object captioning on Objaverse
 python pointllm/eval/evaluator.py --results_path /path/to/model_output --model_type gpt-4-0613 --eval_type object-captioning --parallel --num_workers 15
+
 # Close-set Zero-shot Classification on ModelNet40
 python pointllm/eval/evaluator.py --results_path /path/to/model_output --model_type gpt-3.5-turbo-0613 --eval_type modelnet-close-set-classification --parallel --num_workers 15
 ```
-<!-- Say that the script support ctrl-c to stop evaluate and save temp results (also apply when encountering error) and can run the command again to resume evaluation -->
 3. The evaluation script supports interruption and resumption. You can interrupt the evaluation process at any time by using `Ctrl+C`. This will save the temporary results. If an error occurs during the evaluation, the script will also save the current state. You can resume the evaluation from where it left off by running the same command again.
 4. The evaluation results will be saved in `{model_name}/evaluation` as another dict.
 Some of the metrics are explained as follows:
 ```bash
 "average_score": The GPT-evaluated captioning score we report in our paper.
 "accuracy": The classification accuracy we report in our paper, including random choices made by ChatGPT when model outputs are vague or ambiguous and ChatGPT outputs "INVALID".
-"clean_accuracy": The classification accuracy removing those "INVALID" outputs.
+"clean_accuracy": The classification accuracy after removing those "INVALID" outputs.
 "total_predictions": The number of predictions.
 "correct_predictions": The number of correct predictions.
 "invalid_responses": The number of "INVALID" outputs by ChatGPT.
+
 # Some other statistics for calling OpenAI API
 "prompt_tokens": The total number of tokens of the prompts for ChatGPT/GPT-4.
 "completion_tokens": The total number of tokens of the completion results from ChatGPT/GPT-4.
-"GPT_cost": The API cost of the whole evaluation process, in US Dollar 💵.
+"GPT_cost": The API cost of the whole evaluation process, in US Dollars 💵.
 ```
 5. <b>Open-Step Evaluation.</b> You can also start evaluation immediately after inferencing by passing the `--start_eval` flag and specifying the `--gpt_type`. For example:
 ```bash
@@ -283,11 +292,11 @@ python pointllm/eval/eval_objaverse.py --model_name RunsenXu/PointLLM_7B_v1.2 --
 ```
 
 #### Traditional Metric Evaluation
-1. For the object captioning task, run the following command to evalute model outputs with traditional metrics including BLEU, ROUGE, METEOR, Sentence-BERT, and SimCSE.
+1. For the object captioning task, run the following command to evaluate model outputs with traditional metrics including BLEU, ROUGE, METEOR, Sentence-BERT, and SimCSE.
 ```bash
 python pointllm/eval/traditional_evaluator.py --results_path /path/to/model_captioning_output
 ```
-2. Note that we recommend not using BLEU, ROUGE, and METEOR for evaution as they favour short captions and fall short at capturing semantic accuracy and diversity.
+2. Note that we recommend not using BLEU, ROUGE, and METEOR for evaluation as they favor short captions and fall short of capturing semantic accuracy and diversity.
 
 ## 📝 TODO List
 - [x] Add inferencing codes with checkpoints.
@@ -295,6 +304,7 @@ python pointllm/eval/traditional_evaluator.py --results_path /path/to/model_capt
 - [x] Add training codes.
 - [x] Add evaluation codes.
 - [ ] Add data generation codes.
+- [ ] Add gradio demo codes.
 
 ## 🔗 Citation
 
