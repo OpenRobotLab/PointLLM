@@ -136,11 +136,11 @@ def start_conversation(args, model, tokenizer, point_backbone_config, keywords, 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--model-path", type=str, \
+    parser.add_argument("--model_name", type=str, \
        default="RunsenXu/PointLLM_7B_v1.2")
 
-    parser.add_argument("--data-path", type=str, default="data/objaverse_data")
-    parser.add_argument("--torch-dtype", type=str, default="float32", choices=["float32", "float16", "bfloat16"])
+    parser.add_argument("--data_path", type=str, default="data/objaverse_data")
+    parser.add_argument("--torch_dtype", type=str, default="float32", choices=["float32", "float16", "bfloat16"])
 
     args = parser.parse_args()
 

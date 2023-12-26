@@ -21,7 +21,7 @@ dependencies = [
     "transformers @ git+https://github.com/huggingface/transformers.git@cae78c46",
     "openai", "tqdm",
     "easydict", "timm==0.4.12", "ftfy==6.0.1", "regex", "open3d==0.16.0", "h5py", "termcolor",
-    "plyfile", "nltk", "rouge", "scikit-learn", "py-rouge", "pycocoevalcap"
+    "plyfile", "nltk", "rouge", "scikit-learn", "py-rouge"
 ]
 
 [tool.setuptools.packages.find]
