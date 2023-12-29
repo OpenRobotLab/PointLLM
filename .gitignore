@@ -9,3 +9,4 @@ objaverse_data
 *.zip
 *.ipynb
 data
+serving_workdirs

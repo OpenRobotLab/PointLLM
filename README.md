@@ -220,6 +220,14 @@ PYTHONPATH=$PWD python pointllm/eval/PointLLM_chat.py --model_name RunsenXu/Poin
     | PointLLM-13B | torch.float16 |    26GB    |
     | PointLLM-13B | torch.float32 |    52GB    |
 
+### Gradio Demo
+1. We provide the codes for our online Gradio demo. You can run the following commands to launch the demo locally for chatting and visualization.
+```bash
+cd PointLLM
+PYTHONPATH=$PWD python pointllm/eval/chat_gradio.py --model_name RunsenXu/PointLLM_7B_v1.2 --data_name data/objaverse_data
+```
+2. Kind remind: if you want to release the demo in public, please refer to https://www.gradio.app/guides/sharing-your-app#security-and-file-access.
+
 ### Evaluation
 #### Inferencing
 1. Run the following commands to infer the results.
@@ -303,8 +311,8 @@ python pointllm/eval/traditional_evaluator.py --results_path /path/to/model_capt
 - [x] Release instruction-following data.
 - [x] Add training codes.
 - [x] Add evaluation codes.
+- [x] Add gradio demo codes.
 - [ ] Add data generation codes.
-- [ ] Add gradio demo codes.
 
 ## 🔗 Citation
 
