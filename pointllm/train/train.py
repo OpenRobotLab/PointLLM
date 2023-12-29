@@ -16,7 +16,7 @@
 
 from dataclasses import dataclass, field
 import pathlib
-from typing import Dict, Optional, List
+from typing import Optional, List
 
 
 import transformers
@@ -52,7 +52,6 @@ class DataArguments:
     split_ratio: float = field(default=0.9, metadata={"help": "Ratio of train and val."})
     pointnum: int = field(default=8192, metadata={"help": "Number of points."})
     conversation_types: List[str] = field(default_factory=lambda: ["simple_description"], metadata={"help": "Conversation types to use."})
-
     is_multimodal: bool = True
 
 @dataclass
@@ -101,21 +100,15 @@ def train():
     # * build logger
     logger = build_logger(__name__, training_args.output_dir + '/train.log')
 
-    if "PointLLM" in model_args.model_name_or_path:
-        if training_args.model_debug:
-            # * do not load checkpoint, load from config
-            config = transformers.AutoConfig.from_pretrained(
-                    model_args.model_name_or_path,
-                    cache_dir=training_args.cache_dir,
-                )
-            model = PointLLMLlamaForCausalLM._from_config(config)
-        else:
-            model = PointLLMLlamaForCausalLM.from_pretrained(
+    if training_args.model_debug:
+        # * do not load checkpoint, load from config
+        config = transformers.AutoConfig.from_pretrained(
                 model_args.model_name_or_path,
                 cache_dir=training_args.cache_dir,
             )
+        model = PointLLMLlamaForCausalLM._from_config(config)
     else:
-        model = transformers.LlamaForCausalLM.from_pretrained(
+        model = PointLLMLlamaForCausalLM.from_pretrained(
             model_args.model_name_or_path,
             cache_dir=training_args.cache_dir,
         )
@@ -148,60 +141,59 @@ def train():
         tokenizer.pad_token = tokenizer.unk_token
         conversation_lib.default_conversation = conversation_lib.conv_templates["vicuna_v1_1"]
 
-    if "PointLLM" in model_args.model_name_or_path:
-        if not training_args.fix_pointnet:
-            # * not fix pointnet
-            logger.info("Point backbone is trainable. Fix_pointnet flag is set to False, pointnet grad will be recorded.")
-            model.get_model().fix_pointnet = False
-        else:
-            logger.info("Point backbone is fixed. Fix_pointnet flag is set to True, pointnet grad will not be recorded.")
-            model.get_model().fix_pointnet = True # * use with torch.inference_mode to control, not requires_grad for fsdp for second stage
-            if not training_args.stage_2:
-                logger.info("Set requires_grad of point backbone to False")
-                model.get_model().point_backbone.requires_grad_(False) # * fix pointnet for first stage, need for fsdp in stage2
-        
-        if training_args.tune_mm_mlp_adapter:
-            # * not fix the projection layer
-            # * may need to set the embed_tokens to require_grad = True if added new tokens
-            # * this is done in initialize_tokenizer_point_backbone_config
-            logger.info("Point projection layer is trainable.")
-        else:
-            model.get_model().point_proj.requires_grad_(False)
-            logger.info("Point prejcetion layer is fixed.")
-
+    if not training_args.fix_pointnet:
+        # * not fix pointnet
+        logger.info("Point backbone is trainable. Fix_pointnet flag is set to False, pointnet grad will be recorded.")
+        model.get_model().fix_pointnet = False
+    else:
+        logger.info("Point backbone is fixed. Fix_pointnet flag is set to True, pointnet grad will not be recorded.")
+        model.get_model().fix_pointnet = True # * use with torch.inference_mode to control, not requires_grad for fsdp for second stage
         if not training_args.stage_2:
-            # * we assume in stage2, llm, point_backbone, and projection layer can be loaded from the model checkpoint
-            print(f"Default point_backbone_ckpt is {training_args.point_backbone_ckpt}.")
-            model.get_model().load_point_backbone_checkpoint(training_args.point_backbone_ckpt)
-            model.initialize_tokenizer_point_backbone_config(tokenizer=tokenizer, device=training_args.device, fix_llm=training_args.fix_llm)
-        else:
-            # * stage2
-            model.initialize_tokenizer_point_backbone_config_wo_embedding(tokenizer=tokenizer) 
+            logger.info("Set requires_grad of point backbone to False")
+            model.get_model().point_backbone.requires_grad_(False) # * fix pointnet for first stage, need for fsdp in stage2
+    
+    if training_args.tune_mm_mlp_adapter:
+        # * not fix the projection layer
+        # * may need to set the embed_tokens to require_grad = True if added new tokens
+        # * this is done in initialize_tokenizer_point_backbone_config
+        logger.info("Point projection layer is trainable.")
+    else:
+        model.get_model().point_proj.requires_grad_(False)
+        logger.info("Point prejcetion layer is fixed.")
 
-        point_backbone_config = model.get_model().point_backbone_config
+    if not training_args.stage_2:
+        # * we assume in stage2, llm, point_backbone, and projection layer can be loaded from the model checkpoint
+        print(f"Default point_backbone_ckpt is {training_args.point_backbone_ckpt}.")
+        model.get_model().load_point_backbone_checkpoint(training_args.point_backbone_ckpt)
+        model.initialize_tokenizer_point_backbone_config(tokenizer=tokenizer, device=training_args.device, fix_llm=training_args.fix_llm)
+    else:
+        # * stage2
+        model.initialize_tokenizer_point_backbone_config_wo_embedding(tokenizer=tokenizer) 
 
-        data_args.point_token_len = point_backbone_config['point_token_len']
-        data_args.mm_use_point_start_end = point_backbone_config['mm_use_point_start_end']
-        data_args.point_backbone_config = point_backbone_config
+    point_backbone_config = model.get_model().point_backbone_config
 
-        params_no_grad = [n for n, p in model.named_parameters() if not p.requires_grad]
-        if len(params_no_grad) > 0:
-            if training_args.fsdp is not None and len(training_args.fsdp) > 0:
-                if len(params_no_grad) < 10:
-                    print('[WARNING] Attempting to use FSDP while {} parameters do not require gradients: {}'. format(len(params_no_grad), params_no_grad))
-                else:
-                    print('[WARNING] Attempting to use FSDP while {} parameters do not require gradients: {}...(omitted)'. format(len(params_no_grad), ', '.join(params_no_grad[:10])))
-                print("[WARNING] Attempting to use FSDP with partially frozen paramters, this is experimental.")
-                print("[WARNING] As of 4/30/23, this feature requires PyTorch-nightly build.  See here for details: https://github.com/haotian-liu/LLaVA#experimental-use-fsdp-to-save-memory-in-pretraining")
+    data_args.point_token_len = point_backbone_config['point_token_len']
+    data_args.mm_use_point_start_end = point_backbone_config['mm_use_point_start_end']
+    data_args.point_backbone_config = point_backbone_config
 
-                from torch.distributed.fsdp.fully_sharded_data_parallel import FullyShardedDataParallel as FSDP
-                def patch_FSDP_use_orig_params(func):
-                    def wrap_func(*args, **kwargs):
-                        use_orig_params = kwargs.pop('use_orig_params', True)
-                        return func(*args, **kwargs, use_orig_params=use_orig_params)
-                    return wrap_func
+    params_no_grad = [n for n, p in model.named_parameters() if not p.requires_grad]
+    if len(params_no_grad) > 0:
+        if training_args.fsdp is not None and len(training_args.fsdp) > 0:
+            if len(params_no_grad) < 10:
+                print('[WARNING] Attempting to use FSDP while {} parameters do not require gradients: {}'. format(len(params_no_grad), params_no_grad))
+            else:
+                print('[WARNING] Attempting to use FSDP while {} parameters do not require gradients: {}...(omitted)'. format(len(params_no_grad), ', '.join(params_no_grad[:10])))
+            print("[WARNING] Attempting to use FSDP with partially frozen paramters, this is experimental.")
+            print("[WARNING] As of 4/30/23, this feature requires PyTorch-nightly build.  See here for details: https://github.com/haotian-liu/LLaVA#experimental-use-fsdp-to-save-memory-in-pretraining")
 
-                FSDP.__init__ = patch_FSDP_use_orig_params(FSDP.__init__)
+            from torch.distributed.fsdp.fully_sharded_data_parallel import FullyShardedDataParallel as FSDP
+            def patch_FSDP_use_orig_params(func):
+                def wrap_func(*args, **kwargs):
+                    use_orig_params = kwargs.pop('use_orig_params', True)
+                    return func(*args, **kwargs, use_orig_params=use_orig_params)
+                return wrap_func
+
+            FSDP.__init__ = patch_FSDP_use_orig_params(FSDP.__init__)
 
     data_module = make_object_point_data_module(tokenizer=tokenizer,
                                                     data_args=data_args)
