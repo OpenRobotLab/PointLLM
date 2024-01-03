@@ -70,9 +70,9 @@ You can chat with PointLLM about the models of the [Objaverse](https://objaverse
 Please do not hesitate to tell us if you have any feedback! 😃
 
 ## 💬 Dialogue Examples
-| Dialogue 1 | Dialogue 2| Dialogue 3 | Dialogue 3
+| Dialogue 1 | Dialogue 2| Dialogue 3 | Dialogue 4
 | :-: | :-: | :-: | :-: |
-| <img width="100%" src="assets/dialogue_1.jpg"> |  <img width="100%" src="assets/dialogue_2.jpg"> |  <img width="100%" src="assets/dialogue_3.jpg"> | <img width="100%" src="assets/dialogue_1.jpg"> |
+| <img width="100%" src="assets/dialogue_1.jpg"> |  <img width="100%" src="assets/dialogue_2.jpg"> |  <img width="100%" src="assets/dialogue_3.jpg"> | <img width="100%" src="assets/dialogue_4.jpg"> |
 
 
 ## 🔍 Overview
