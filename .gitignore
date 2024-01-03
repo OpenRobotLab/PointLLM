@@ -6,7 +6,7 @@ outputs
 wandb
 anno_data
 objaverse_data
+modelnet40_data
 *.zip
 *.ipynb
-data
 serving_workdirs
