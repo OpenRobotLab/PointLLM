@@ -1,0 +1,12 @@
+Analyze the 3D object model from the given caption:
+1. Write a new detailed caption by describing it in 50-100 words, identifying its type, appearance, and any other inferred information such as functionalities, usages, daily-life knowledge, etc. Exclude any uncertain details.
+2. Generate 3 single-round Q&As regarding diverse aspects of the object based on the provided captions and your new captions.
+3. Construct 1 set of 3-round Q&As, ensuring logical relevance between the questions and answers. Questions should be different from those in "2".
+
+Format your response as:
+``` json
+{
+"caption": "description",
+"single_conversation": [{"Q": "Q", "A": "A"} x 3],
+"multi_conversation": [{"Q1": "Q", "A1": "A", "Q2": "Q", "A2": "A", "Q3": "Q", "A3": "A"} x 1]
+}
