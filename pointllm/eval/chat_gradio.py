@@ -77,20 +77,23 @@ def start_conversation(args, model, tokenizer, point_backbone_config, keywords, 
             objects = None
             data = None
             object_id_input = object_id_input.strip()
-            print("%" * 80)
-            print(f"Object_id: {object_id_input}")
-            print("%" * 80)
 
-            logging.warning("%" * 80)
-            logging.warning(f"Object_id: {object_id_input}")
+            print("%" * 80)
             logging.warning("%" * 80)
 
             if input_choice == 'File':
                 file = point_cloud_input.name 
+                print(f"Uploading file: {file}.")
+                logging.warning(f"Uploading file: {file}.")
             elif input_choice == 'Object ID':
                 file = os.path.join(args.data_path, "{}_8192.npy".format(object_id_input))
+                print(f"Object_id: {object_id_input}")
+                logging.warning(f"Object_id: {object_id_input}")
+
                 object_uids = [object_id_input]
                 objects = objaverse.load_objects(uids=object_uids)
+            print("%" * 80)
+            logging.warning("%" * 80)
 
             manual_no_color = "no_color" in file
 
