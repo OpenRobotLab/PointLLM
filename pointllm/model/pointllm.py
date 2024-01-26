@@ -35,7 +35,7 @@ class PointLLMLlamaModel(LlamaModel):
         if self.point_backbone_type == "PointBERT":
             from pointllm.model import PointTransformer
             # address of config file, in the same dir of this file
-            point_bert_config_name = getattr(config, "point_backbone_config_name", "PointTransformer_base_8192point") # * default for v1.1, v1.2 uses PointTransformer_8192point_2layer.yaml
+            point_bert_config_name = getattr(config, "point_backbone_config_name", "PointTransformer_8192point_2layer") # * default for v1.2, v1.1 uses PointTransformer_base_8192point.yaml
             point_bert_config_addr = os.path.join(os.path.dirname(__file__), "pointbert", f"{point_bert_config_name}.yaml")
             print(f"Loading PointBERT config from {point_bert_config_addr}.")
             point_bert_config = cfg_from_yaml_file(point_bert_config_addr)

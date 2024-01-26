@@ -266,6 +266,7 @@ def start_conversation(args, model, tokenizer, point_backbone_config, keywords, 
             gr.Markdown(
                 """
                 # PointLLM: Empowering Large Language Models to Understand Point Clouds. 🚀
+                If you think this demo interesting, please consider starring 🌟 our github repo. :)
                 [[Project Page](https://runsenxu.com/projects/PointLLM)] [[Paper](https://arxiv.org/abs/2308.16911)] [[Code](https://github.com/OpenRobotLab/PointLLM)] 
                 """
             )
@@ -308,9 +309,12 @@ def start_conversation(args, model, tokenizer, point_backbone_config, keywords, 
                 """
                 ### Usage:
                 1. Upload your point cloud file (ply, npy only) or input the supported [Objaverse object id (uid)](https://drive.google.com/file/d/1gLwA7aHfy1KCrGeXlhICG9rT2387tWY8/view?usp=sharing) (currently 660K objects only, you may try the example object ids below). 
-                2. If your point cloud file does not contian colors, manually set the file name contains 'no_color' (e.g., 'xxx_no_color.npy'), and black color will be assigned.
-                3. Click **Confirm Point Cloud (after finishing uploading if applicable).**
-                4. Once '[System] New Point Cloud' appears in the dialogue box, a new conversation with PointLLM is initialized.
+                2. If your point cloud file does not contian colors, manually set the file name contains 'no_color' (e.g., 'xxx_no_color.npy'), and the black color will be assigned.
+                3. If uploading your own point cloud file with color in npy format, the first three dimensions should be xyz, and the next three dimensions should be rgb. The rgb values should range from **0 to 1**.
+                4. Click **Confirm Point Cloud**.
+                5. As we use FPS sampling to downsample the point cloud to 8192 points, it may take a long time to confirm the point cloud if the point cloud has too many points.
+                6. Once '[System] New Point Cloud' appears in the dialogue box, a new conversation with PointLLM is initialized.
+                7. The 'Clear' button will clear the conversation history.
                 """)
             with gr.Accordion("Example Objaverse object ids in the validation set!", open=False):
                 example_object_ids = [  ["b4bbf2116b1a41a5a3b9d3622b07074c", "0b8da82a3d7a436f9b585436c4b72f56", "650c53d68d374c18886aab91bcf8bb54"],
@@ -326,13 +330,6 @@ def start_conversation(args, model, tokenizer, point_backbone_config, keywords, 
                     col_count=3,
                     value=example_object_ids
                 )
-            gr.Markdown(
-                """
-                ### Note: 
-                - If uploading your own point cloud file with color in npy format, the first three dimensions should be xyz, and the next three dimensions should be rgb. The rgb values should range from **0 to 1**.
-                - The 'Clear' button will clear the conversation history.
-                """
-            )
             gr.Markdown(
                 """
                 #### Terms of use
