@@ -315,6 +315,10 @@ python pointllm/eval/traditional_evaluator.py --results_path /path/to/model_capt
 - [x] Add evaluation codes.
 - [x] Add gradio demo codes.
 
+Community contributions are welcome!👇 If you need any support, please feel free to open an issue or contact us.
+- [ ] Support Phi-2 LLM to make PointLLM more accessible to the community.
+- [ ] Support Chinese LLMs like InternLM.
+
 ## 🔗 Citation
 
 If you find our work and this codebase helpful, please consider starring this repo 🌟 and cite:
