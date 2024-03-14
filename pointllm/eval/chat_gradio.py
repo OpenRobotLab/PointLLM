@@ -132,7 +132,12 @@ def start_conversation(args, model, tokenizer, point_backbone_config, keywords, 
                 colors = None
 
             if colors is not None:
-                color_data = np.multiply(colors, 255).astype(int)  # Convert float values (0-1) to integers (0-255), used for display
+                # * if colors in range(0-1)
+                if np.max(colors) <= 1:
+                    color_data = np.multiply(colors, 255).astype(int)  # Convert float values (0-1) to integers (0-255)
+                # * if colors in range(0-255)
+                elif np.max(colors) <= 255:
+                    color_data = colors.astype(int)
             else:
                 color_data = np.zeros_like(points).astype(int)  # Default to black color if RGB information is not available
             colors = color_data.astype(np.float32) / 255 # model input is (0-1)
