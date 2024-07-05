@@ -320,7 +320,7 @@ def start_conversation(args, model, tokenizer, point_backbone_config, keywords, 
                 2. If your point cloud file does not contian colors, manually set the file name contains 'no_color' (e.g., 'xxx_no_color.npy'), and the black color will be assigned.
                 3. If uploading your own point cloud file with color in npy format, the first three dimensions should be xyz, and the next three dimensions should be rgb. The rgb values should range from **0 to 1**.
                 4. Click **Confirm Point Cloud**.
-                5. As we use FPS sampling to downsample the point cloud to 8192 points, it may take a long time to confirm the point cloud if the point cloud has too many points.
+                5. As we use FPS sampling to downsample the point cloud to 8192 points, it may take a long time to confirm the point cloud if the point cloud has too many points. You may use random sampling to downsample the point cloud before uploading.
                 6. Once '[System] New Point Cloud' appears in the dialogue box, a new conversation with PointLLM is initialized.
                 7. The 'Clear' button will clear the conversation history.
                 """)
