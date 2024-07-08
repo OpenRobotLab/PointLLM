@@ -100,7 +100,7 @@ class PointLLMLlamaModel(LlamaModel):
         return_dict: Optional[bool] = None,
     ) -> Union[Tuple, BaseModelOutputWithPast]:
 
-        # HACK: replace back original embeddings for LLaVA pretraining
+        # HACK: replace back original embeddings for pretraining
         orig_embeds_params = getattr(self, 'orig_embeds_params', None)
 
         if inputs_embeds is None:
@@ -136,7 +136,7 @@ class PointLLMLlamaModel(LlamaModel):
             for cur_input_ids, cur_input_embeds in zip(input_ids, inputs_embeds): # * input_ids: B, L; input_embeds: B, L, C
                 if (cur_input_ids == point_backbone_config['point_patch_token']).sum() == 0:
                     # multimodal LLM, but the current sample is not multimodal
-                    cur_input_embeds = cur_input_embeds + (0. * dummy_point_features).sum() # * seems doing nothing
+                    cur_input_embeds = cur_input_embeds + (0. * dummy_point_features).sum() # * do nothing
                     new_input_embeds.append(cur_input_embeds)
                     cur_point_idx += 1
                     continue
@@ -148,8 +148,8 @@ class PointLLMLlamaModel(LlamaModel):
                     point_start_tokens = torch.where(cur_input_ids == point_backbone_config["point_start_token"])[0]
                     for point_start_token_pos in point_start_tokens:
                         if cur_input_ids[point_start_token_pos + num_patches + 1] != point_backbone_config["point_end_token"]:
-                            raise ValueError("The point end token should follow the image start token.")
-                        if orig_embeds_params is not None: # * will not update the original embeddings except for IMAGE_START_TOKEN and IMAGE_END_TOKEN
+                            raise ValueError("The point end token should follow the point start token.")
+                        if orig_embeds_params is not None: # * will not update the original embeddings except for POINT_START_TOKEN and POINT_END_TOKEN
                             cur_new_input_embeds = torch.cat((cur_input_embeds[:point_start_token_pos].detach(), cur_input_embeds[point_start_token_pos:point_start_token_pos+1], cur_point_features, cur_input_embeds[point_start_token_pos + num_patches + 1:point_start_token_pos + num_patches + 2], cur_input_embeds[point_start_token_pos + num_patches + 2:].detach()), dim=0)
                         else:
                             cur_new_input_embeds = torch.cat((cur_input_embeds[:point_start_token_pos+1], cur_point_features, cur_input_embeds[point_start_token_pos + num_patches + 1:]), dim=0)
@@ -161,7 +161,7 @@ class PointLLMLlamaModel(LlamaModel):
                     masked_indices = torch.where(cur_input_ids == point_backbone_config["point_patch_token"])[0]
                     mask_index_start = masked_indices[0]
                     if (masked_indices != torch.arange(mask_index_start, mask_index_start+num_patches, device=masked_indices.device, dtype=masked_indices.dtype)).any():
-                        raise ValueError("The image patch tokens should be consecutive.")
+                        raise ValueError("The point patch tokens should be consecutive.")
                     if orig_embeds_params is not None:
                         cur_new_input_embeds = torch.cat((cur_input_embeds[:mask_index_start].detach(), cur_point_features, cur_input_embeds[mask_index_start+num_patches:].detach()), dim=0)
                     else:
