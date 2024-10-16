@@ -326,11 +326,11 @@ Community contributions are welcome!👇 If you need any support, please feel fr
 If you find our work and this codebase helpful, please consider starring this repo 🌟 and cite:
 
 ```bibtex
-@article{xu2023pointllm,
+@inproceedings{xu2024pointllm,
   title={PointLLM: Empowering Large Language Models to Understand Point Clouds},
   author={Xu, Runsen and Wang, Xiaolong and Wang, Tai and Chen, Yilun and Pang, Jiangmiao and Lin, Dahua},
-  journal={arXiv preprint arXiv:2308.16911},
-  year={2023}
+  booktitle={ECCV},
+  year={2024}
 }
 ```
 
