@@ -23,7 +23,7 @@
   <a href="https://runsenxu.com/projects/PointLLM" target='_blank'>
     <img src="https://img.shields.io/badge/Project-&#x1F680-blue">
   </a>
-  <a href="http://101.230.144.196" target='_blank'>
+  <a href="" target='_blank'>
     <img src="https://img.shields.io/badge/Demo-&#x1f917-blue">
   </a>
   <a href="" target='_blank'>
@@ -42,6 +42,7 @@
 We introduce <b>PointLLM, a multi-modal large language model capable of understanding colored point clouds of objects.</b> It perceives object types, geometric structures, and appearance without concerns for ambiguous depth, occlusion, or viewpoint dependency. <b>We collect a novel dataset comprising 660K simple and 70K complex point-text instruction pairs</b> to enable a two-stage training strategy. To rigorously evaluate our model's perceptual abilities and its generalization capabilities, <b>we establish two benchmarks: Generative 3D Object Classification and 3D Object Captioning, assessed through three different evaluation methods.</b>
 
 ## 🔥 News
+- [2025-04-21] We closed our online demo because we need to use the serving machine for other purposes.
 - [2024-09-06] We have uploaded the camera-ready version of PointLLM for ECCV 2024, which includes clearer writing and additional experimental results. Please check the paper [here](https://arxiv.org/abs/2308.16911).
 - [2024-07-01] PointLLM has been accepted by ECCV 2024 with all "strong-accept" recommendation. 🎉 We are looking for self-motivated students to conduct research regarding PointLLM. Please send an email to runsxu@gmail.com with your CV if you are interested!
 - [2023-12-29] We release the codes of our online Gradio demo.
@@ -50,7 +51,7 @@ We introduce <b>PointLLM, a multi-modal large language model capable of understa
 - [2023-12-01] We have released an updated version of our paper (v2), which includes additional baseline comparisons, enhanced human-evaluation metrics, improved model performance (PointLLM-v1.2), and other refinements. Please check the updated version [here](https://arxiv.org/abs/2308.16911).
 - [2023-10-18] We release our instruction-following data, including both the simple-description and complex instructions. Download [here](https://huggingface.co/datasets/RunsenXu/PointLLM).
 - [2023-09-26] We release the inferencing codes with checkpoints as well as the Objaverse colored point cloud files we use. You can chat with PointLLM with your own machines.
-- [2023-08-31] We release the [paper](http://arxiv.org/abs/2308.16911) of PointLLM and an online gradio [demo](http://101.230.144.196). Try it! &#x1F389;
+- [2023-08-31] We release the [paper](http://arxiv.org/abs/2308.16911) of PointLLM and an online gradio demo. Try it! &#x1F389;
 
 <!-- contents with emoji -->
 ## 📋 Contents
@@ -64,12 +65,6 @@ We introduce <b>PointLLM, a multi-modal large language model capable of understa
 - [📚 Related Work](#-related-work)
 - [👏 Acknowledgements](#-acknowledgements)
 
-## 🤖 Online Demo
-<b>PointLLM is online! Try it at [http://101.230.144.196](http://101.230.144.196) or at [OpenXLab/PointLLM](https://openxlab.org.cn/apps/detail/openxlab-app/PointLLM).</b>
-
-You can chat with PointLLM about the models of the [Objaverse](https://objaverse.allenai.org) dataset or about your own point clouds!
-
-Please do not hesitate to tell us if you have any feedback! 😃
 
 ## 💬 Dialogue Examples
 | Dialogue 1 | Dialogue 2| Dialogue 3 | Dialogue 4
