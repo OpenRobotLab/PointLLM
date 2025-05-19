@@ -223,7 +223,7 @@ PYTHONPATH=$PWD python pointllm/eval/PointLLM_chat.py --model_name RunsenXu/Poin
 1. We provide the codes for our online Gradio demo. You can run the following commands to launch the demo locally for chatting and visualization.
 ```bash
 cd PointLLM
-PYTHONPATH=$PWD python pointllm/eval/chat_gradio.py --model_name RunsenXu/PointLLM_7B_v1.2 --data_name data/objaverse_data
+PYTHONPATH=$PWD python pointllm/eval/chat_gradio.py --model_name RunsenXu/PointLLM_7B_v1.2 --data_path data/objaverse_data
 ```
 2. Kind remind: if you want to release the demo in public, please refer to https://www.gradio.app/guides/sharing-your-app#security-and-file-access.
 
