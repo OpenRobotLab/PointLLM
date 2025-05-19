@@ -352,7 +352,7 @@ if __name__ == "__main__":
     # ! Please check 1. the lanuch dir 2. the tmp dir (GRADIO_TEMP_DIR)
     # ! refer to https://www.gradio.app/guides/sharing-your-app#security-and-file-access
     parser = argparse.ArgumentParser()
-    parser.add_argument("--model-name", type=str, \
+    parser.add_argument("--model_name", type=str, \
          default="RunsenXu/PointLLM_7B_v1.2")
 
 
