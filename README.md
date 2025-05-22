@@ -1,4 +1,3 @@
-<br>
 <p align="center">
 <h1 align="center"><img src="assets/icon.png" align="center" width="6.5%"><strong>PointLLM: Empowering Large Language Models to Understand Point Clouds</strong></h1>
   <p align="center">
